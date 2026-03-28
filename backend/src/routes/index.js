@@ -1,4 +1,5 @@
-const router = require('express').Router();
+const express = require('express');
+const router = express.Router();
 const { authMiddleware, requireRole, requireAnyRole, clienteAuthMiddleware } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 
@@ -19,6 +20,7 @@ const pagosMP = require('../controllers/pagosMPController');
 const notificaciones = require('../controllers/notificacionesController');
 const monitor = require('../controllers/monitorController');
 const ofertas = require('../controllers/ofertasController');
+const backup = require('../controllers/backupController');
 
 // Auth (public)
 router.post('/auth/login', auth.login);
@@ -124,6 +126,16 @@ router.get('/ofertas', requireRole('admin'), ofertas.listar);
 router.post('/ofertas', requireRole('admin'), ofertas.crear);
 router.put('/ofertas/:id', requireRole('admin'), ofertas.actualizar);
 router.delete('/ofertas/:id', requireRole('admin'), ofertas.eliminar);
+
+// Backup (admin only)
+router.get('/backup/download', requireRole('admin'), backup.download);
+router.post('/backup/save', requireRole('admin'), backup.save);
+router.get('/backup/list', requireRole('admin'), backup.list);
+router.get('/backup/server/:filename', requireRole('admin'), backup.downloadServer);
+router.delete('/backup/server/:filename', requireRole('admin'), backup.deleteServer);
+router.post('/backup/restore', requireRole('admin'), express.json({ limit: '100mb' }), backup.restore);
+router.get('/backup/schedule', requireRole('admin'), backup.getSchedule);
+router.post('/backup/schedule', requireRole('admin'), backup.setSchedule);
 
 // Monitor — admin only
 router.get('/monitor/summary',     requireRole('admin'), monitor.getSummary);

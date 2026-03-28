@@ -15,6 +15,7 @@ import { OrdenDetalle } from './pages/OrdenDetalle';
 import { Inscripcion } from './pages/Inscripcion';
 import { Notificaciones } from './pages/Notificaciones';
 import { Monitoreo } from './pages/Monitoreo';
+import { Backup } from './pages/Backup';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
@@ -48,6 +49,7 @@ function App() {
             <Route path="ordenes/:id" element={<OrdenDetalle />} />
             <Route path="notificaciones" element={<AdminRoute><Notificaciones /></AdminRoute>} />
             <Route path="monitoreo" element={<AdminRoute><Monitoreo /></AdminRoute>} />
+            <Route path="backup" element={<AdminRoute><Backup /></AdminRoute>} />
           </Route>
           <Route path="/inscripcion" element={<Inscripcion />} />
           <Route path="*" element={<Navigate to="/" replace />} />

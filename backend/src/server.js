@@ -13,6 +13,7 @@ const routes = require('./routes');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const { requestLogger } = require('./middleware/monitor');
 const { iniciarScheduler } = require('./controllers/facturasController');
+const { iniciarBackupScheduler } = require('./services/backupScheduler');
 
 // Validate critical env vars
 const required = ['DATABASE_URL', 'JWT_SECRET'];
@@ -63,6 +64,7 @@ app.use(errorHandler);
 const start = async () => {
   await initSchema();
   iniciarScheduler();
+  iniciarBackupScheduler();
   app.listen(PORT, () => console.log(`✓ Servidor corriendo en http://localhost:${PORT}`));
 };
 
