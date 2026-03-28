@@ -5,11 +5,12 @@ const { query } = require('../config/database');
 const BACKUP_DIR = path.join(__dirname, '../../uploads/backups');
 fs.mkdirSync(BACKUP_DIR, { recursive: true });
 
+// Tablas de datos críticos (sin logs que pueden ser muy grandes)
 const TABLES = [
   'usuarios', 'planes', 'clientes', 'conexiones', 'facturas',
   'equipos', 'configuracion_isp', 'ordenes_trabajo', 'partes_tecnicos',
   'notificaciones', 'notificaciones_leidas', 'sesiones_clientes',
-  'ofertas_instalacion', 'request_logs', 'error_logs', 'audit_logs', 'performance_logs'
+  'ofertas_instalacion'
 ];
 
 async function generateBackup() {
@@ -41,12 +42,14 @@ const download = async (req, res) => {
 // POST /api/backup/save — genera y guarda backup en servidor
 const save = async (req, res) => {
   try {
+    fs.mkdirSync(BACKUP_DIR, { recursive: true });
     const data = await generateBackup();
     const filename = `backup_${new Date().toISOString().replace(/[:.]/g, '-')}.json`;
     const filepath = path.join(BACKUP_DIR, filename);
     fs.writeFileSync(filepath, JSON.stringify(data, null, 2));
     res.json({ ok: true, filename, size: fs.statSync(filepath).size });
   } catch (err) {
+    console.error('Error en backup save:', err);
     res.status(500).json({ error: 'Error guardando backup', detail: err.message });
   }
 };

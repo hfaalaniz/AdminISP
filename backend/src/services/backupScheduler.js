@@ -19,7 +19,7 @@ async function runBackup() {
     'usuarios', 'planes', 'clientes', 'conexiones', 'facturas',
     'equipos', 'configuracion_isp', 'ordenes_trabajo', 'partes_tecnicos',
     'notificaciones', 'notificaciones_leidas', 'sesiones_clientes',
-    'ofertas_instalacion', 'request_logs', 'error_logs', 'audit_logs', 'performance_logs'
+    'ofertas_instalacion'
   ];
 
   const data = { version: 1, created_at: new Date().toISOString(), tables: {} };
