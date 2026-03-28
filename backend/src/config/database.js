@@ -84,9 +84,6 @@ const initSchema = async () => {
     CREATE INDEX IF NOT EXISTS idx_sesiones_cliente ON sesiones_clientes(cliente_id);
     CREATE INDEX IF NOT EXISTS idx_sesiones_inicio  ON sesiones_clientes(inicio DESC);
 
-    -- Migration for configuracion_isp
-    ALTER TABLE configuracion_isp ADD COLUMN IF NOT EXISTS logo_url TEXT;
-
     CREATE TABLE IF NOT EXISTS notificaciones (
       id            SERIAL PRIMARY KEY,
       tipo          TEXT NOT NULL CHECK (tipo IN ('corte_programado','suspension','problema_red','mantenimiento','aviso_pago','personalizado')),
@@ -169,6 +166,8 @@ const initSchema = async () => {
       provincia       TEXT NOT NULL DEFAULT 'Córdoba',
       updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+
+    ALTER TABLE configuracion_isp ADD COLUMN IF NOT EXISTS logo_url TEXT;
 
     INSERT INTO configuracion_isp (id, nombre_empresa, localidad, provincia)
     VALUES (1, 'AdminISP', 'Villa Santa Cruz del Lago', 'Córdoba')
