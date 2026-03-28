@@ -15,6 +15,7 @@ const { requestLogger } = require('./middleware/monitor');
 const { iniciarScheduler } = require('./controllers/facturasController');
 
 // Validate critical env vars
+console.log('ENV CHECK:', { DATABASE_URL: !!process.env.DATABASE_URL, JWT_SECRET: !!process.env.JWT_SECRET });
 const required = ['DATABASE_URL', 'JWT_SECRET'];
 required.forEach((k) => {
   if (!process.env[k]) {
