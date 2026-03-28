@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Cliente, ClienteDetalle, Plan, Conexion, Factura, DashboardStats, PaginatedResponse, SesionCliente, OfertaInstalacion } from '../types';
 
-const api = axios.create({ baseURL: '/api', timeout: 10000 });
+const api = axios.create({ baseURL: `${import.meta.env.VITE_API_URL || ''}/api`, timeout: 10000 });
 
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('isp_token');

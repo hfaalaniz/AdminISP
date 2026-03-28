@@ -78,7 +78,7 @@ interface ClienteInfo {
 type Step = 'inicio' | 'planes' | 'instalacion' | 'formulario' | 'exito' | 'login' | 'portal'
 
 // ── API ───────────────────────────────────────────────────────────────────────
-const api = axios.create({ baseURL: '/api' })
+const api = axios.create({ baseURL: `${import.meta.env.VITE_API_URL || ''}/api` })
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fmt = (n: number) =>
