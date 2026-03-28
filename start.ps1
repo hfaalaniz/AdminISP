@@ -19,3 +19,6 @@ Write-Host "Servicios iniciados en ventanas separadas:" -ForegroundColor Green
 Write-Host "  Backend   ->  http://localhost:3000" -ForegroundColor Yellow
 Write-Host "  Frontend  ->  http://localhost:5173" -ForegroundColor Yellow
 Write-Host "  Web       ->  http://localhost:5174" -ForegroundColor Yellow
+
+
+
