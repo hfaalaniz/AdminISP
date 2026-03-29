@@ -339,7 +339,7 @@ const CambiarPassword = ({ token }: { token: string }) => {
 }
 
 // ── ContactForm ───────────────────────────────────────────────────────────────
-const ContactForm = ({ isp }: { isp: { email?: string; telefono?: string } }) => {
+const ContactForm = () => {
   const [form, setForm] = useState({ nombre: '', email: '', telefono: '', mensaje: '' })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
@@ -1096,7 +1096,7 @@ export default function App() {
                 {/* Formulario */}
                 <div className="bg-slate-800/50 border border-white/10 rounded-3xl p-8">
                   <h3 className="text-lg font-bold text-white mb-6">Envianos un mensaje</h3>
-                  <ContactForm isp={isp} />
+                  <ContactForm />
                 </div>
 
                 {/* Info + Mapa */}
