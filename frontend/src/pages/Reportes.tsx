@@ -231,7 +231,7 @@ export const Reportes = () => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                 <XAxis dataKey="mes" tick={{ fill: '#9ca3af', fontSize: 12 }} />
                 <YAxis tick={{ fill: '#9ca3af', fontSize: 12 }} tickFormatter={v => '$' + (v / 1000).toFixed(0) + 'k'} />
-                <Tooltip formatter={(v: number) => fmt(v)} contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
+                <Tooltip formatter={(v: any) => fmt(Number(v))} contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
                 <Bar dataKey="total" name="Recaudado" fill="#3b82f6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -245,7 +245,7 @@ export const Reportes = () => {
                 onExport={() => exportCSV(financieroData.por_estado, 'facturas_por_estado.csv')} />
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
-                  <Pie data={financieroData.por_estado} dataKey="cantidad" nameKey="estado_pago" cx="50%" cy="50%" outerRadius={80} label={({ estado_pago, percent }) => `${estado_pago} ${(percent * 100).toFixed(0)}%`}>
+                  <Pie data={financieroData.por_estado} dataKey="cantidad" nameKey="estado_pago" cx="50%" cy="50%" outerRadius={80} label={(props: any) => `${props.estado_pago} ${((props.percent ?? 0) * 100).toFixed(0)}%`}>
                     {financieroData.por_estado.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
@@ -262,7 +262,7 @@ export const Reportes = () => {
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                   <XAxis type="number" tick={{ fill: '#9ca3af', fontSize: 11 }} tickFormatter={v => '$' + (v / 1000).toFixed(0) + 'k'} />
                   <YAxis type="category" dataKey="plan" tick={{ fill: '#9ca3af', fontSize: 11 }} width={80} />
-                  <Tooltip formatter={(v: number) => fmt(v)} contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
+                  <Tooltip formatter={(v: any) => fmt(Number(v))} contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
                   <Bar dataKey="total" name="Total" fill="#10b981" radius={[0, 4, 4, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -337,7 +337,7 @@ export const Reportes = () => {
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie data={clientesData.por_estado} dataKey="cantidad" nameKey="estado" cx="50%" cy="50%" outerRadius={80}
-                    label={({ estado, percent }) => `${estado} ${(percent * 100).toFixed(0)}%`}>
+                    label={(props: any) => `${props.estado} ${((props.percent ?? 0) * 100).toFixed(0)}%`}>
                     {clientesData.por_estado.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
@@ -430,7 +430,7 @@ export const Reportes = () => {
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie data={ordenesData.por_estado} dataKey="cantidad" nameKey="estado" cx="50%" cy="50%" outerRadius={80}
-                    label={({ estado, percent }) => `${estado} ${(percent * 100).toFixed(0)}%`}>
+                    label={(props: any) => `${props.estado} ${((props.percent ?? 0) * 100).toFixed(0)}%`}>
                     {ordenesData.por_estado.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
@@ -491,7 +491,7 @@ export const Reportes = () => {
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie data={redData.por_estado} dataKey="cantidad" nameKey="estado" cx="50%" cy="50%" outerRadius={80}
-                    label={({ estado, percent }) => `${estado} ${(percent * 100).toFixed(0)}%`}>
+                    label={(props: any) => `${props.estado} ${((props.percent ?? 0) * 100).toFixed(0)}%`}>
                     {redData.por_estado.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
@@ -505,7 +505,7 @@ export const Reportes = () => {
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie data={redData.por_tecnologia} dataKey="cantidad" nameKey="tecnologia" cx="50%" cy="50%" outerRadius={80}
-                    label={({ tecnologia, percent }) => `${tecnologia} ${(percent * 100).toFixed(0)}%`}>
+                    label={(props: any) => `${props.tecnologia} ${((props.percent ?? 0) * 100).toFixed(0)}%`}>
                     {redData.por_tecnologia.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: '1px solid #374151', borderRadius: 8 }} />
