@@ -30,10 +30,13 @@ app.use(helmet({ contentSecurityPolicy: false }));
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map(o => o.trim())
   : ['*'];
+const isDev = process.env.NODE_ENV !== 'production';
 app.use(cors({
   origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) cb(null, true);
-    else cb(new Error('Not allowed by CORS'));
+    if (!origin || allowedOrigins.includes('*')) return cb(null, true);
+    if (isDev && origin.startsWith('http://localhost')) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
   },
   credentials: true
 }));

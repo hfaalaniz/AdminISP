@@ -12,6 +12,7 @@ const adminNav = [
   { to: '/notificaciones', label: 'Notificaciones', icon: '📣' },
   { to: '/monitoreo', label: 'Monitoreo', icon: '🔍' },
   { to: '/configuracion', label: 'Configuración', icon: '⚙️' },
+  { to: '/reportes', label: 'Reportes', icon: '📈' },
   { to: '/backup', label: 'Base de Datos', icon: '🗄️' },
 ];
 

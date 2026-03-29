@@ -1,0 +1,288 @@
+{
+  "version": 1,
+  "created_at": "2026-03-28T18:02:28.584Z",
+  "tables": {
+    "usuarios": [
+      {
+        "id": 1,
+        "nombre": "Administrador",
+        "email": "admin@isp.com",
+        "password_hash": "$2a$10$NeZtgd6sDnbW952GPRZ7AuU7STfVGDSHsCgW6d9mLDk4IYAu2EsoW",
+        "rol": "admin",
+        "activo": true,
+        "created_at": "2026-03-27T04:09:34.470Z",
+        "updated_at": "2026-03-27T05:38:15.370Z"
+      },
+      {
+        "id": 2,
+        "nombre": "Tecnico",
+        "email": "tecnico@isp.com",
+        "password_hash": "$2a$10$ryex2wlT0nVOVY31qFXXx.tJbUQ0Ha3Fqw3aPWESBlk2saa5j2ns2",
+        "rol": "tecnico",
+        "activo": true,
+        "created_at": "2026-03-27T05:22:46.728Z",
+        "updated_at": "2026-03-27T05:38:29.412Z"
+      },
+      {
+        "id": 3,
+        "nombre": "Operador",
+        "email": "operador@isp.com",
+        "password_hash": "$2a$10$Q8KXTC352Ro1BV12REMDHu9lqy7Qe7ssbiRPFoWgJKC9FC9M1gdSq",
+        "rol": "operador",
+        "activo": true,
+        "created_at": "2026-03-27T05:23:14.613Z",
+        "updated_at": "2026-03-27T05:23:14.613Z"
+      }
+    ],
+    "planes": [
+      {
+        "id": 1,
+        "nombre": "Básico 25 Mbps",
+        "velocidad_down": 20,
+        "velocidad_up": 5,
+        "precio_mensual": "20000.00",
+        "descripcion": "Plan económico para uso básico",
+        "activo": true,
+        "created_at": "2026-03-27T04:09:34.477Z",
+        "updated_at": "2026-03-27T04:34:58.172Z"
+      },
+      {
+        "id": 2,
+        "nombre": "Estándar 50 Mbps",
+        "velocidad_down": 50,
+        "velocidad_up": 20,
+        "precio_mensual": "25000.00",
+        "descripcion": "Ideal para familias",
+        "activo": true,
+        "created_at": "2026-03-27T04:09:34.481Z",
+        "updated_at": "2026-03-27T04:35:05.109Z"
+      },
+      {
+        "id": 3,
+        "nombre": "Fibra 100 Mbps",
+        "velocidad_down": 100,
+        "velocidad_up": 50,
+        "precio_mensual": "30000.00",
+        "descripcion": "Alta velocidad simétrica",
+        "activo": true,
+        "created_at": "2026-03-27T04:09:34.482Z",
+        "updated_at": "2026-03-27T04:34:45.864Z"
+      }
+    ],
+    "clientes": [
+      {
+        "id": 4,
+        "nombre": "Clidelia Acosta",
+        "email": "clidelia@gmail.com",
+        "telefono": "3511535636",
+        "dni": "21340053",
+        "direccion": "Los Talas 114",
+        "barrio": "Valle del Sol",
+        "ciudad": "Villa Santa Cruz del Lago",
+        "coordenadas": null,
+        "plan_id": 3,
+        "estado": "activo",
+        "fecha_alta": "2026-03-27T03:00:00.000Z",
+        "notas": null,
+        "created_at": "2026-03-27T05:36:06.124Z",
+        "updated_at": "2026-03-28T05:47:42.342Z",
+        "password_hash": "$2a$10$xz2MOaqLaYCer.Vwufa0bOWRjfXry2uPt63XKskeleZcnmtu1aCuS",
+        "contrato_listo": true,
+        "dni_frente_url": null,
+        "dni_dorso_url": null,
+        "sesion_activa": false
+      }
+    ],
+    "conexiones": [
+      {
+        "id": 3,
+        "cliente_id": 4,
+        "ip_asignada": null,
+        "mac_address": null,
+        "puerto_olt": null,
+        "tecnologia": "fibra",
+        "estado": "conectado",
+        "ultimo_ping": null,
+        "velocidad_real": null,
+        "observaciones": null,
+        "updated_at": "2026-03-28T05:03:47.123Z"
+      }
+    ],
+    "facturas": [
+      {
+        "id": 3,
+        "cliente_id": 4,
+        "plan_id": 3,
+        "periodo": "2026-03",
+        "monto": "30000.00",
+        "estado_pago": "pagado",
+        "fecha_vencimiento": "2026-03-31T03:00:00.000Z",
+        "fecha_pago": "2026-03-27T07:04:07.227Z",
+        "metodo_pago": "efectivo",
+        "referencia_pago": null,
+        "notas": null,
+        "created_at": "2026-03-27T06:18:21.448Z",
+        "updated_at": "2026-03-27T07:04:07.227Z",
+        "tipo": "servicio",
+        "cuota_numero": null,
+        "cuota_total": null,
+        "oferta_id": null
+      }
+    ],
+    "equipos": [
+      {
+        "id": 1,
+        "nombre": "ONT",
+        "marca": "Huawei",
+        "modelo": "HG8310M",
+        "descripcion": "Convertidor de fibra óptica",
+        "activo": true,
+        "created_at": "2026-03-27T04:31:05.509Z",
+        "updated_at": "2026-03-27T04:31:05.509Z"
+      },
+      {
+        "id": 2,
+        "nombre": "Router WiFi",
+        "marca": "TP-Link",
+        "modelo": "Archer C6",
+        "descripcion": "Router inalámbrico doble banda",
+        "activo": true,
+        "created_at": "2026-03-27T04:31:05.509Z",
+        "updated_at": "2026-03-27T04:31:05.509Z"
+      }
+    ],
+    "configuracion_isp": [
+      {
+        "id": 1,
+        "nombre_empresa": "AdminISP",
+        "cuit": "20-20916122-3",
+        "domicilio": "Avenida Las Huellas 212",
+        "telefono": "03512848802",
+        "email": "hfaalaniz@gmail.com",
+        "localidad": "Villa Santa Cruz del Lago",
+        "provincia": "Córdoba",
+        "updated_at": "2026-03-27T06:06:32.230Z",
+        "logo_url": "/uploads/1774591585938-686194936.png"
+      }
+    ],
+    "ordenes_trabajo": [
+      {
+        "id": 2,
+        "cliente_id": 4,
+        "tecnico_id": 2,
+        "created_by": null,
+        "tipo": "conexion",
+        "descripcion": "Conexión generada automáticamente por inscripción",
+        "estado": "completada",
+        "prioridad": "normal",
+        "fecha_programada": null,
+        "fecha_completada": "2026-03-27T05:48:52.670Z",
+        "created_at": "2026-03-27T05:36:06.127Z",
+        "updated_at": "2026-03-27T05:48:52.670Z"
+      }
+    ],
+    "partes_tecnicos": [
+      {
+        "id": 1,
+        "orden_id": 2,
+        "tecnico_id": 2,
+        "trabajo_realizado": null,
+        "equipos_instalados": [
+          {
+            "marca": "Huawei",
+            "modelo": "HG8310M",
+            "nombre": "ONT",
+            "nro_serie": "123456789"
+          }
+        ],
+        "observaciones": "conexion ok",
+        "estado_conexion_resultante": "conectado",
+        "fecha_trabajo": "2026-03-27T03:00:00.000Z",
+        "imagenes": [],
+        "submitted_at": "2026-03-27T05:59:08.843Z",
+        "locked": true,
+        "created_at": "2026-03-27T05:48:52.651Z",
+        "updated_at": "2026-03-27T05:59:08.843Z"
+      }
+    ],
+    "notificaciones": [
+      {
+        "id": 1,
+        "tipo": "corte_programado",
+        "titulo": "Corte programado del servicio",
+        "mensaje": "El dia 29/03/2026 entre las 08AM y las 11AM se realizará un corte de servicio programado para realizar tareas de mantenimiento en central. Sepa disculparnos. Muchas Gracias!!!",
+        "destinatarios": "todos",
+        "cliente_id": null,
+        "enviado_por": 1,
+        "emails_enviados": 0,
+        "created_at": "2026-03-27T07:12:27.131Z"
+      }
+    ],
+    "notificaciones_leidas": [],
+    "sesiones_clientes": [
+      {
+        "id": 1,
+        "cliente_id": 4,
+        "inicio": "2026-03-28T05:18:23.303Z",
+        "fin": null,
+        "duracion_seg": null
+      },
+      {
+        "id": 2,
+        "cliente_id": 4,
+        "inicio": "2026-03-28T05:45:01.800Z",
+        "fin": null,
+        "duracion_seg": null
+      },
+      {
+        "id": 3,
+        "cliente_id": 4,
+        "inicio": "2026-03-28T05:45:57.031Z",
+        "fin": null,
+        "duracion_seg": null
+      }
+    ],
+    "ofertas_instalacion": [
+      {
+        "id": 2,
+        "nombre": "Instalacion bonificada solo una semana",
+        "descripcion": "Valido entre fechas",
+        "tipo": "gratis",
+        "precio_total": "0.00",
+        "cuotas": 1,
+        "activa": true,
+        "orden": 0,
+        "created_at": "2026-03-28T06:49:31.605Z",
+        "updated_at": "2026-03-28T06:50:20.420Z",
+        "precio_original": "20000.00",
+        "destacada": true,
+        "badge_texto": null,
+        "fecha_inicio": "2026-03-27T03:00:00.000Z",
+        "fecha_fin": "2026-04-11T03:00:00.000Z",
+        "plan_ids": [
+          1
+        ]
+      },
+      {
+        "id": 3,
+        "nombre": "Cuotas la instalacion",
+        "descripcion": "Oferta valida todo el mes de abril",
+        "tipo": "cuotas",
+        "precio_total": "30000.00",
+        "cuotas": 3,
+        "activa": true,
+        "orden": 0,
+        "created_at": "2026-03-28T07:02:49.412Z",
+        "updated_at": "2026-03-28T07:02:49.412Z",
+        "precio_original": "30000.00",
+        "destacada": false,
+        "badge_texto": null,
+        "fecha_inicio": null,
+        "fecha_fin": null,
+        "plan_ids": [
+          3
+        ]
+      }
+    ]
+  }
+}

@@ -21,6 +21,7 @@ const notificaciones = require('../controllers/notificacionesController');
 const monitor = require('../controllers/monitorController');
 const ofertas = require('../controllers/ofertasController');
 const backup = require('../controllers/backupController');
+const reportes = require('../controllers/reportesController');
 
 // Auth (public)
 router.post('/auth/login', auth.login);
@@ -126,6 +127,13 @@ router.get('/ofertas', requireRole('admin'), ofertas.listar);
 router.post('/ofertas', requireRole('admin'), ofertas.crear);
 router.put('/ofertas/:id', requireRole('admin'), ofertas.actualizar);
 router.delete('/ofertas/:id', requireRole('admin'), ofertas.eliminar);
+
+// Reportes (admin only)
+router.get('/reportes/financiero', requireRole('admin'), reportes.financiero);
+router.get('/reportes/clientes', requireRole('admin'), reportes.clientes);
+router.get('/reportes/ordenes', requireRole('admin'), reportes.ordenes);
+router.get('/reportes/red', requireRole('admin'), reportes.red);
+router.get('/reportes/listados', requireRole('admin'), reportes.listados);
 
 // Backup (admin only)
 router.get('/backup/download', requireRole('admin'), backup.download);
