@@ -413,6 +413,47 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [navOpen, setNavOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [bannerVisible, setBannerVisible] = useState(true)
+  const [bannerIndex, setBannerIndex] = useState(0)
+  const [bannerTransitioning, setBannerTransitioning] = useState(false)
+
+  const bannerAds = [
+    {
+      tag: 'Sistema de Gestión',
+      title: 'Gestioná tu negocio con StockFlow',
+      desc: 'ERP completo con ventas, stock, facturación AFIP y más. Empezá gratis, sin tarjeta.',
+      cta: 'Probar gratis →',
+      url: 'https://stockflow.netlify.app',
+      accent: 'from-violet-500 to-indigo-600',
+      glow: 'shadow-violet-500/30',
+      glowHover: 'hover:shadow-violet-500/60',
+      bg: 'from-violet-900/60 via-indigo-900/40 to-slate-900/80',
+    },
+    {
+      tag: 'Servicios Eléctricos',
+      title: 'ElectroNet — Electricistas en Córdoba',
+      desc: 'Diagnóstico gratis en tu domicilio, disponibilidad 24/7 y garantía de 6 meses en trabajos.',
+      cta: 'Ver servicios →',
+      url: 'https://electronet.netlify.app',
+      accent: 'from-lime-500 to-green-500',
+      glow: 'shadow-lime-500/30',
+      glowHover: 'hover:shadow-lime-500/60',
+      bg: 'from-lime-900/60 via-green-900/40 to-slate-900/80',
+    },
+  ]
+
+  const goToBanner = useCallback((i: number) => {
+    setBannerTransitioning(true)
+    setTimeout(() => { setBannerIndex(i); setBannerTransitioning(false) }, 250)
+  }, [])
+
+  useEffect(() => {
+    if (!bannerVisible) return
+    const t = setInterval(() => {
+      goToBanner((bannerIndex + 1) % bannerAds.length)
+    }, 5000)
+    return () => clearInterval(t)
+  }, [bannerVisible, bannerIndex, bannerAds.length, goToBanner])
 
   const [form, setForm] = useState({
     nombre: '', email: '', telefono: '', dni: '',
@@ -570,6 +611,47 @@ export default function App() {
   // ── RENDER ──────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+
+      {/* ═══════════════════════ BANNER PUBLICITARIO ═══════════════════════ */}
+      {bannerVisible && (() => {
+        const ad = bannerAds[bannerIndex]
+        return (
+          <div className={`fixed top-16 inset-x-0 z-40 px-4 py-2 flex items-center justify-center gap-3 backdrop-blur-md border-b border-white/8 shadow-lg transition-shadow duration-500 ${ad.glow}`}
+            style={{
+              background: bannerIndex === 0
+                ? 'linear-gradient(270deg, #0f172a, #2e1065, #1e1b4b, #0f172a)'
+                : 'linear-gradient(270deg, #0f172a, #14532d, #1a2e05, #0f172a)',
+              backgroundSize: '400% 400%',
+              animation: 'bannerShift 8s ease infinite',
+            }}>
+            <div className={`flex items-center gap-3 flex-1 justify-center min-w-0 transition-all duration-250 ${bannerTransitioning ? 'opacity-0 translate-y-1' : 'opacity-100 translate-y-0'}`}>
+              <span className={`hidden sm:inline-block text-[10px] font-black uppercase tracking-widest bg-gradient-to-r ${ad.accent} text-white px-2.5 py-0.5 rounded-full shrink-0`}>
+                {ad.tag}
+              </span>
+              <p className="text-sm text-slate-300 truncate">
+                <span className="font-bold text-white">{ad.title}</span>
+                <span className="hidden md:inline"> — {ad.desc}</span>
+              </p>
+              <a
+                href={ad.url} target="_blank" rel="noopener noreferrer"
+                className={`shrink-0 bg-gradient-to-r ${ad.accent} text-white text-xs font-bold px-4 py-1.5 rounded-xl transition-all duration-200 hover:scale-105 shadow-md ${ad.glow} ${ad.glowHover}`}
+              >
+                {ad.cta}
+              </a>
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0 ml-1">
+              {bannerAds.map((_, i) => (
+                <button key={i} onClick={() => goToBanner(i)}
+                  className={`rounded-full transition-all duration-300 ${i === bannerIndex ? 'w-4 h-1.5 bg-white' : 'w-1.5 h-1.5 bg-white/30 hover:bg-white/60'}`} />
+              ))}
+            </div>
+            <button onClick={() => setBannerVisible(false)}
+              className="shrink-0 text-slate-500 hover:text-white transition text-lg leading-none ml-1">
+              ✕
+            </button>
+          </div>
+        )
+      })()}
 
       {/* ═══════════════════════ NAVBAR ═══════════════════════ */}
       <nav className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
