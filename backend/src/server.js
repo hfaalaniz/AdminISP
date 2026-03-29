@@ -66,6 +66,18 @@ app.use(errorHandler);
 
 const start = async () => {
   await initSchema();
+  if (process.env.RUN_SEED === 'true') {
+    const bcrypt = require('bcryptjs');
+    const { query } = require('./config/database');
+    const hash = await bcrypt.hash('admin123', 10);
+    await query(
+      `INSERT INTO usuarios (nombre, email, password_hash, rol)
+       VALUES ('Administrador', 'admin@isp.com', $1, 'admin')
+       ON CONFLICT (email) DO NOTHING`,
+      [hash]
+    );
+    console.log('✓ Seed ejecutado: admin@isp.com / admin123');
+  }
   iniciarScheduler();
   iniciarBackupScheduler();
   app.listen(PORT, () => console.log(`✓ Servidor corriendo en http://localhost:${PORT}`));
