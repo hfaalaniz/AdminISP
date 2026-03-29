@@ -209,7 +209,7 @@ const HeroCarousel = ({ onCta, isp }: { onCta: () => void; isp: ISP }) => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <button onClick={onCta}
-              className={`bg-gradient-to-r ${slide.accent} text-white font-bold px-8 py-4 rounded-2xl text-base transition-all hover:scale-105 shadow-2xl`}>
+              className={`bg-gradient-to-r ${slide.accent} text-white font-bold px-8 py-4 rounded-2xl text-base transition-all hover:scale-105 shadow-2xl hover:shadow-cyan-500/40`}>
               {slide.cta} →
             </button>
             {isp.telefono && (
@@ -338,10 +338,74 @@ const CambiarPassword = ({ token }: { token: string }) => {
   )
 }
 
+// ── ContactForm ───────────────────────────────────────────────────────────────
+const ContactForm = ({ isp }: { isp: { email?: string; telefono?: string } }) => {
+  const [form, setForm] = useState({ nombre: '', email: '', telefono: '', mensaje: '' })
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+
+  const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm(f => ({ ...f, [k]: e.target.value }))
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!form.nombre.trim() || !form.mensaje.trim()) return toast.error('Completá nombre y mensaje')
+    setSending(true)
+    try {
+      await api.post('/public/contacto', form)
+      setSent(true)
+      setForm({ nombre: '', email: '', telefono: '', mensaje: '' })
+    } catch (err: any) {
+      toast.error(err.response?.data?.error ?? 'Error al enviar. Intentá de nuevo.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  if (sent) return (
+    <div className="flex flex-col items-center justify-center h-full gap-4 py-10 text-center">
+      <div className="text-5xl">✅</div>
+      <h4 className="font-bold text-white text-lg">¡Mensaje enviado!</h4>
+      <p className="text-slate-400 text-sm max-w-xs">Recibimos tu consulta y te respondemos a la brevedad.</p>
+      <button onClick={() => setSent(false)} className="text-cyan-400 hover:text-cyan-300 text-sm transition">Enviar otro mensaje</button>
+    </div>
+  )
+
+  const inputCls = "w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-cyan-400/60 focus:bg-white/8 transition"
+
+  return (
+    <form onSubmit={submit} className="space-y-4">
+      <div>
+        <label className="block text-xs font-medium text-slate-400 mb-1.5">Nombre <span className="text-cyan-400">*</span></label>
+        <input className={inputCls} placeholder="Tu nombre completo" value={form.nombre} onChange={set('nombre')} required />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-medium text-slate-400 mb-1.5">Email</label>
+          <input type="email" className={inputCls} placeholder="tu@email.com" value={form.email} onChange={set('email')} />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-400 mb-1.5">Teléfono</label>
+          <input type="tel" className={inputCls} placeholder="Tu teléfono" value={form.telefono} onChange={set('telefono')} />
+        </div>
+      </div>
+      <div>
+        <label className="block text-xs font-medium text-slate-400 mb-1.5">Mensaje <span className="text-cyan-400">*</span></label>
+        <textarea className={`${inputCls} resize-none`} rows={5} placeholder="¿En qué podemos ayudarte?" value={form.mensaje} onChange={set('mensaje')} required />
+      </div>
+      <button type="submit" disabled={sending}
+        className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 text-white font-bold py-3.5 rounded-2xl text-sm transition-all shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105">
+        {sending ? 'Preparando...' : '📨 Enviar mensaje'}
+      </button>
+    </form>
+  )
+}
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 export default function App() {
   const [step, setStep] = useState<Step>('inicio')
   const [planes, setPlanes] = useState<Plan[]>([])
+  const [planesLoaded, setPlanesLoaded] = useState(false)
   const [ofertas, setOfertas] = useState<OfertaInstalacion[]>([])
   const [isp, setIsp] = useState<ISP>({ nombre_empresa: 'AdminISP', localidad: 'Villa Santa Cruz del Lago', provincia: 'Córdoba' })
   const [planSel, setPlanSel] = useState<Plan | null>(null)
@@ -367,7 +431,7 @@ export default function App() {
   const [loginForm, setLoginForm] = useState({ email: '', password: '' })
 
   useEffect(() => {
-    api.get<Plan[]>('/public/planes', { params: { activo: 'true' } }).then((r) => setPlanes(r.data))
+    api.get<Plan[]>('/public/planes', { params: { activo: 'true' } }).then((r) => { setPlanes(r.data); setPlanesLoaded(true) }).catch(() => setPlanesLoaded(true))
     api.get<ISP>('/public/configuracion').then((r) => setIsp(r.data)).catch(() => null)
     api.get<OfertaInstalacion[]>('/public/ofertas', { params: { activa: 'true' } }).then((r) => setOfertas(r.data)).catch(() => null)
   }, [])
@@ -564,7 +628,7 @@ export default function App() {
                   Ingresar
                 </button>
                 <button onClick={() => setStep('planes')}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-lg shadow-cyan-500/20">
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2 rounded-xl text-sm transition-all shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105">
                   Contratar
                 </button>
               </>
@@ -610,7 +674,7 @@ export default function App() {
                     Ingresar a mi cuenta
                   </button>
                   <button onClick={() => { setStep('planes'); setNavOpen(false) }}
-                    className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3 px-4 rounded-xl text-sm text-left">
+                    className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3 px-4 rounded-xl text-sm text-left transition-all shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105">
                     Contratar el servicio →
                   </button>
                 </>
@@ -639,7 +703,7 @@ export default function App() {
                   placeholder="••••••••" required />
                 <button type="submit" disabled={loading}
                   className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50
-                             text-white font-bold py-3.5 rounded-2xl text-base transition-all shadow-lg shadow-cyan-500/20 mt-2">
+                             text-white font-bold py-3.5 rounded-2xl text-base transition-all shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 mt-2">
                   {loading ? 'Ingresando...' : 'Ingresar'}
                 </button>
               </form>
@@ -751,7 +815,7 @@ export default function App() {
               <div>
                 <p className="text-sm text-slate-300 mb-4">Tu contrato está disponible. Incluye los datos técnicos de los equipos instalados.</p>
                 <button onClick={descargarContrato}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-6 py-3 rounded-xl text-sm transition-all shadow-lg flex items-center gap-2">
+                  className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-6 py-3 rounded-xl text-sm transition-all shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 flex items-center gap-2">
                   📄 Descargar contrato en PDF
                 </button>
               </div>
@@ -914,7 +978,7 @@ export default function App() {
                 { icon: '🛡️', title: 'Red estable', desc: 'Infraestructura redundante con monitoreo 24/7 y 99.9% de disponibilidad garantizada en tu servicio.', color: 'from-cyan-500/20 to-blue-500/10 border-cyan-500/20' },
                 { icon: '🤝', title: 'Soporte local', desc: 'Equipo de técnicos de la zona disponible para asistirte. Instalación incluida y atención personalizada.', color: 'from-purple-500/20 to-indigo-500/10 border-purple-500/20' },
               ].map(({ icon, title, desc, color }) => (
-                <div key={title} className={`bg-gradient-to-br ${color} border rounded-3xl p-7`}>
+                <div key={title} className={`bg-gradient-to-br ${color} border rounded-3xl p-7 transition-all duration-200 hover:-translate-y-1 hover:bg-gradient-to-b hover:from-cyan-500/25 hover:to-blue-600/20 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20`}>
                   <div className="text-4xl mb-5">{icon}</div>
                   <h3 className="font-bold text-lg text-white mb-3">{title}</h3>
                   <p className="text-slate-400 text-sm leading-relaxed">{desc}</p>
@@ -938,7 +1002,7 @@ export default function App() {
                   { n: '03', icon: '📅', title: 'Coordinamos la instalación', desc: 'Un técnico te contactará para acordar la visita.' },
                   { n: '04', icon: '🚀', title: '¡A navegar!', desc: 'Una vez instalado, tu conexión está activa de inmediato.' },
                 ].map(({ n, icon, title, desc }) => (
-                  <div key={n} className="text-center relative z-10">
+                  <div key={n} className="text-center relative z-10 rounded-2xl p-4 transition-all duration-200 hover:-translate-y-1 hover:bg-gradient-to-b hover:from-cyan-500/25 hover:to-blue-600/20 hover:border hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-800 border border-white/10 flex items-center justify-center text-2xl shadow-xl">
                       {icon}
                     </div>
@@ -952,8 +1016,8 @@ export default function App() {
           </section>
 
           {/* Planes */}
-          {planes.length > 0 && (
-            <section id="planes-section" className="px-6 py-20 max-w-6xl mx-auto">
+          <section id="planes-section" className="px-6 py-20 max-w-6xl mx-auto">
+          {planes.length > 0 && (<>
               <div className="text-center mb-14">
                 <div className="inline-block bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1 text-cyan-400 text-xs font-semibold mb-4 tracking-wide uppercase">
                   Planes y precios
@@ -967,26 +1031,16 @@ export default function App() {
                 planes.length === 3 ? 'grid-cols-1 sm:grid-cols-3' :
                 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4'
               }`}>
-                {planes.map((p, i) => {
-                  const popular = i === 1
+                {planes.map((p) => {
                   const ofertasPlan = ofertasParaPlan(p.id)
                   const ofertaGratis = ofertasPlan.find(o => o.tipo === 'gratis' || Number(o.precio_total) === 0)
                   const ofertaDest   = ofertasPlan.find(o => o.destacada)
                   const mejorOferta  = ofertaDest || ofertaGratis || ofertasPlan[0]
                   return (
                     <div key={p.id} onClick={() => elegirPlan(p)}
-                      className={`relative rounded-3xl p-10 flex flex-col gap-7 cursor-pointer transition-all duration-200 hover:-translate-y-1 w-full ${
-                        popular
-                          ? 'bg-gradient-to-b from-cyan-500/25 to-blue-600/20 border-2 border-cyan-500/50 shadow-2xl shadow-cyan-500/20'
-                          : 'bg-slate-900 border border-white/10 hover:border-white/20'
-                      }`}>
-                      {popular && (
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white text-xs font-black px-4 py-1 rounded-full whitespace-nowrap uppercase tracking-wide">
-                          ★ Más popular
-                        </div>
-                      )}
+                      className="group relative rounded-3xl p-10 flex flex-col gap-7 cursor-pointer transition-all duration-200 hover:-translate-y-1 w-full bg-slate-900 border border-white/10 hover:bg-gradient-to-b hover:from-cyan-500/25 hover:to-blue-600/20 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20">
                       {mejorOferta && (
-                        <div className={`absolute ${popular ? '-top-9 right-4' : '-top-3.5 right-4'} bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[11px] font-black px-2.5 py-0.5 rounded-full whitespace-nowrap uppercase`}>
+                        <div className="absolute -top-3.5 right-4 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[11px] font-black px-2.5 py-0.5 rounded-full whitespace-nowrap uppercase">
                           🎁 {mejorOferta.nombre}
                         </div>
                       )}
@@ -1002,19 +1056,15 @@ export default function App() {
                         <div className="text-5xl font-black text-white">{fmt(p.precio_mensual)}</div>
                         <div className="text-slate-400 text-sm mt-1.5">por mes</div>
                       </div>
-                      <div className={`w-full py-4 rounded-2xl font-bold text-base text-center transition-colors ${
-                        popular
-                          ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
-                          : 'bg-white/8 hover:bg-white/15 text-white border border-white/15'
-                      }`}>
+                      <div className="w-full py-4 rounded-2xl font-bold text-base text-center transition-colors bg-white/8 group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-blue-600 text-white border border-white/15 group-hover:border-transparent">
                         Elegir este plan
                       </div>
                     </div>
                   )
                 })}
               </div>
-            </section>
-          )}
+            </>)}
+          </section>
 
           {/* CTA banner */}
           <section className="px-6 py-20">
@@ -1032,34 +1082,91 @@ export default function App() {
           </section>
 
           {/* Contacto */}
-          <section id="contacto" className="bg-slate-900/60 border-t border-white/8 px-6 py-16">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-10">
-                <h2 className="text-2xl font-black text-white mb-2">Contacto</h2>
-                <p className="text-slate-400 text-sm">Estamos disponibles para ayudarte</p>
+          <section id="contacto" className="bg-slate-900/60 border-t border-white/8 px-6 py-20">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-14">
+                <div className="inline-block bg-cyan-500/10 border border-cyan-500/20 rounded-full px-4 py-1 text-cyan-400 text-xs font-semibold mb-4 tracking-wide uppercase">
+                  Contacto
+                </div>
+                <h2 className="text-3xl md:text-4xl font-black text-white mb-4">¿Cómo podemos ayudarte?</h2>
+                <p className="text-slate-400 max-w-xl mx-auto">Completá el formulario o contactanos directamente. Te respondemos a la brevedad.</p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                {isp.telefono && (
-                  <a href={`tel:${isp.telefono}`}
-                    className="bg-slate-800/60 border border-white/10 rounded-2xl p-5 text-center hover:border-cyan-500/40 transition group">
-                    <div className="text-2xl mb-2">📞</div>
-                    <p className="text-xs text-slate-500 mb-1">Teléfono</p>
-                    <p className="font-bold text-white group-hover:text-cyan-400 transition text-sm">{isp.telefono}</p>
-                  </a>
-                )}
-                {isp.email && (
-                  <a href={`mailto:${isp.email}`}
-                    className="bg-slate-800/60 border border-white/10 rounded-2xl p-5 text-center hover:border-cyan-500/40 transition group">
-                    <div className="text-2xl mb-2">✉️</div>
-                    <p className="text-xs text-slate-500 mb-1">Email</p>
-                    <p className="font-bold text-white group-hover:text-cyan-400 transition text-sm">{isp.email}</p>
-                  </a>
-                )}
-                <div className="bg-slate-800/60 border border-white/10 rounded-2xl p-5 text-center">
-                  <div className="text-2xl mb-2">📍</div>
-                  <p className="text-xs text-slate-500 mb-1">Ubicación</p>
-                  <p className="font-bold text-white text-sm">{isp.localidad}, {isp.provincia}</p>
-                  {isp.domicilio && <p className="text-slate-400 text-xs mt-0.5">{isp.domicilio}</p>}
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                {/* Formulario */}
+                <div className="bg-slate-800/50 border border-white/10 rounded-3xl p-8">
+                  <h3 className="text-lg font-bold text-white mb-6">Envianos un mensaje</h3>
+                  <ContactForm isp={isp} />
+                </div>
+
+                {/* Info + Mapa */}
+                <div className="flex flex-col gap-6">
+                  {/* Datos de contacto */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {isp.telefono && (
+                      <a href={`tel:${isp.telefono}`}
+                        className="bg-slate-800/60 border border-white/10 rounded-2xl p-5 flex items-center gap-4 transition-all duration-200 hover:-translate-y-1 hover:bg-gradient-to-b hover:from-cyan-500/25 hover:to-blue-600/20 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20 group">
+                        <div className="text-2xl shrink-0">📞</div>
+                        <div>
+                          <p className="text-xs text-slate-500 mb-0.5">Teléfono</p>
+                          <p className="font-bold text-white group-hover:text-cyan-300 transition text-sm">{isp.telefono}</p>
+                        </div>
+                      </a>
+                    )}
+                    {isp.email && (
+                      <a href={`mailto:${isp.email}`}
+                        className="bg-slate-800/60 border border-white/10 rounded-2xl p-5 flex items-center gap-4 transition-all duration-200 hover:-translate-y-1 hover:bg-gradient-to-b hover:from-cyan-500/25 hover:to-blue-600/20 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20 group">
+                        <div className="text-2xl shrink-0">✉️</div>
+                        <div>
+                          <p className="text-xs text-slate-500 mb-0.5">Email</p>
+                          <p className="font-bold text-white group-hover:text-cyan-300 transition text-sm break-all">{isp.email}</p>
+                        </div>
+                      </a>
+                    )}
+                    <div className="bg-slate-800/60 border border-white/10 rounded-2xl p-5 flex items-center gap-4 sm:col-span-2">
+                      <div className="text-2xl shrink-0">📍</div>
+                      <div>
+                        <p className="text-xs text-slate-500 mb-0.5">Ubicación</p>
+                        <p className="font-bold text-white text-sm">{isp.localidad}, {isp.provincia}</p>
+                        {isp.domicilio && <p className="text-slate-400 text-xs mt-0.5">{isp.domicilio}</p>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Mapa */}
+                  <div className="rounded-3xl overflow-hidden border border-white/10 flex-1 min-h-[220px]">
+                    <iframe
+                      title="Ubicación"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=-64.5546,-31.3901,-64.5146,-31.3501&layer=mapnik&marker=-31.370145,-64.534620`}
+                      className="w-full h-full min-h-[220px]"
+                      style={{ border: 0, filter: 'invert(90%) hue-rotate(180deg)' }}
+                      loading="lazy"
+                    />
+                  </div>
+
+                  {/* Cómo llegar */}
+                  <div className="bg-slate-800/50 border border-white/10 rounded-3xl p-6">
+                    <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">🗺️ Cómo llegar</h3>
+                    <ol className="space-y-3">
+                      {[
+                        { n: '1', text: `Dirigite a ${isp.localidad}, ${isp.provincia}.` },
+                        { n: '2', text: isp.domicilio ? `Buscá ${isp.domicilio}.` : 'Consultá la dirección exacta por teléfono o email.' },
+                        { n: '3', text: 'Si venís desde la ruta, tomá el acceso a Villa Carlos Paz y seguí hacia el centro.' },
+                        { n: '4', text: 'También podés agendar una visita técnica y nosotros vamos a tu domicilio.' },
+                      ].map(({ n, text }) => (
+                        <li key={n} className="flex items-start gap-3 text-sm text-slate-400">
+                          <span className="shrink-0 w-6 h-6 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-xs font-black flex items-center justify-center">{n}</span>
+                          {text}
+                        </li>
+                      ))}
+                    </ol>
+                    <a
+                      href="https://www.openstreetmap.org/?mlat=-31.370145&mlon=-64.534620#map=17/-31.370145/-64.534620"
+                      target="_blank" rel="noopener noreferrer"
+                      className="mt-5 inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 text-sm font-semibold transition">
+                      Ver en mapa completo →
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1075,8 +1182,10 @@ export default function App() {
             <p className="text-slate-400">Todos los planes incluyen equipos en comodato.</p>
           </div>
 
-          {planes.length === 0 ? (
+          {!planesLoaded ? (
             <p className="text-center text-slate-400">Cargando planes...</p>
+          ) : planes.length === 0 ? (
+            <p className="text-center text-slate-400">No hay planes disponibles por el momento.</p>
           ) : (
             <div className={`grid gap-5 justify-center ${
               planes.length === 1 ? 'grid-cols-1 max-w-xs mx-auto' :
@@ -1084,26 +1193,16 @@ export default function App() {
               planes.length === 3 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto' :
               'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
             }`}>
-              {planes.map((p, i) => {
-                const popular = i === 1
+              {planes.map((p) => {
                 const ofertasPlan = ofertasParaPlan(p.id)
                 const ofertaGratis = ofertasPlan.find(o => o.tipo === 'gratis' || Number(o.precio_total) === 0)
                 const ofertaDest   = ofertasPlan.find(o => o.destacada)
                 const mejorOferta  = ofertaDest || ofertaGratis || ofertasPlan[0]
                 return (
                   <div key={p.id} onClick={() => elegirPlan(p)}
-                    className={`relative rounded-3xl p-8 flex flex-col gap-6 cursor-pointer transition-all duration-200 hover:-translate-y-1 ${
-                      popular
-                        ? 'bg-gradient-to-b from-cyan-500/25 to-blue-600/20 border-2 border-cyan-500/50 shadow-2xl shadow-cyan-500/20'
-                        : 'bg-slate-900 border border-white/10 hover:border-white/25'
-                    }`}>
-                    {popular && (
-                      <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white text-xs font-black px-4 py-1 rounded-full whitespace-nowrap uppercase tracking-wide">
-                        ★ Más popular
-                      </div>
-                    )}
+                    className="group relative rounded-3xl p-8 flex flex-col gap-6 cursor-pointer transition-all duration-200 hover:-translate-y-1 bg-slate-900 border border-white/10 hover:bg-gradient-to-b hover:from-cyan-500/25 hover:to-blue-600/20 hover:border-cyan-500/50 hover:shadow-2xl hover:shadow-cyan-500/20">
                     {mejorOferta && (
-                      <div className={`absolute ${popular ? '-top-9 right-4' : '-top-3.5 right-4'} bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[11px] font-black px-2.5 py-0.5 rounded-full whitespace-nowrap uppercase`}>
+                      <div className="absolute -top-3.5 right-4 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 text-[11px] font-black px-2.5 py-0.5 rounded-full whitespace-nowrap uppercase">
                         🎁 {mejorOferta.nombre}
                       </div>
                     )}
@@ -1119,11 +1218,8 @@ export default function App() {
                       <div className="text-4xl font-black text-white">{fmt(p.precio_mensual)}</div>
                       <div className="text-slate-400 text-sm mt-1">por mes</div>
                     </div>
-                    <div className={`w-full py-3 rounded-2xl font-bold text-base text-center ${
-                      popular
-                        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white'
-                        : 'bg-white/8 hover:bg-white/15 text-white border border-white/15'
-                    }`}>Elegir este plan
+                    <div className="w-full py-3 rounded-2xl font-bold text-base text-center transition-colors bg-white/8 group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-blue-600 text-white border border-white/15 group-hover:border-transparent">
+                      Elegir este plan
                     </div>
                   </div>
                 )
@@ -1330,7 +1426,7 @@ export default function App() {
 
             <button type="submit" disabled={loading}
               className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50
-                         text-white font-black py-4 rounded-2xl text-base transition-all shadow-2xl shadow-cyan-500/20">
+                         text-white font-black py-4 rounded-2xl text-base transition-all shadow-2xl shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105">
               {loading ? 'Enviando solicitud...' : '✅ Solicitar instalación'}
             </button>
           </form>
@@ -1368,7 +1464,7 @@ export default function App() {
               </ol>
             </div>
             <button onClick={() => setStep('portal')}
-              className="w-full mb-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-4 rounded-2xl text-base transition-all shadow-lg flex items-center justify-center gap-2">
+              className="w-full mb-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-4 rounded-2xl text-base transition-all shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:scale-105 flex items-center justify-center gap-2">
               👤 Ver mi cuenta
             </button>
             {(isp.telefono || isp.email) && (

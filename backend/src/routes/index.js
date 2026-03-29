@@ -22,12 +22,14 @@ const monitor = require('../controllers/monitorController');
 const ofertas = require('../controllers/ofertasController');
 const backup = require('../controllers/backupController');
 const reportes = require('../controllers/reportesController');
+const contacto = require('../controllers/contactoController');
 
 // Auth (public)
 router.post('/auth/login', auth.login);
 
 // Public endpoints (no auth required)
 router.get('/public/planes', planes.listar);
+router.post('/public/contacto', contacto.enviar);
 router.post('/public/inscripcion', upload.fields([{ name: 'dni_frente', maxCount: 1 }, { name: 'dni_dorso', maxCount: 1 }]), clientes.crear);
 router.post('/public/registro', upload.fields([{ name: 'dni_frente', maxCount: 1 }, { name: 'dni_dorso', maxCount: 1 }]), clienteAuth.registro);
 router.post('/public/login-cliente', clienteAuth.login);
