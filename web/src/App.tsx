@@ -423,7 +423,7 @@ export default function App() {
       title: 'Gestioná tu negocio con StockFlow',
       desc: 'ERP completo con ventas, stock, facturación AFIP y más. Empezá gratis, sin tarjeta.',
       cta: 'Probar gratis →',
-      url: 'https://stockflow.netlify.app',
+      url: 'https://stockflowweb.netlify.app',
       accent: 'from-violet-500 to-indigo-600',
       glow: 'shadow-violet-500/30',
       glowHover: 'hover:shadow-violet-500/60',
