@@ -320,6 +320,51 @@ const initSchema = async () => {
     );
     CREATE INDEX IF NOT EXISTS idx_perf_logs_created ON performance_logs(created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_perf_logs_metric  ON performance_logs(metric);
+
+    -- ── Permisos por rol ──────────────────────────────────────────────────────
+    CREATE TABLE IF NOT EXISTS permisos_roles (
+      id        SERIAL PRIMARY KEY,
+      rol       TEXT NOT NULL CHECK (rol IN ('admin','operador','tecnico')),
+      modulo    TEXT NOT NULL,
+      accion    TEXT NOT NULL,
+      habilitado BOOLEAN NOT NULL DEFAULT TRUE,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      UNIQUE (rol, modulo, accion)
+    );
+
+    -- Seed de permisos por defecto (admin tiene todo, operador y tecnico restringidos)
+    INSERT INTO permisos_roles (rol, modulo, accion, habilitado) VALUES
+      -- admin: todo habilitado
+      ('admin','clientes','ver',true),('admin','clientes','crear',true),('admin','clientes','editar',true),('admin','clientes','eliminar',true),
+      ('admin','facturas','ver',true),('admin','facturas','crear',true),('admin','facturas','cobrar',true),
+      ('admin','ordenes','ver',true),('admin','ordenes','crear',true),('admin','ordenes','asignar',true),
+      ('admin','planes','ver',true),('admin','planes','editar',true),
+      ('admin','reportes','ver',true),
+      ('admin','configuracion','ver',true),('admin','configuracion','editar',true),
+      ('admin','usuarios','ver',true),('admin','usuarios','gestionar',true),
+      ('admin','backup','crear',true),('admin','backup','descargar',true),
+      ('admin','monitor','ver',true),
+      -- operador: permisos de operacion
+      ('operador','clientes','ver',true),('operador','clientes','crear',true),('operador','clientes','editar',true),('operador','clientes','eliminar',false),
+      ('operador','facturas','ver',true),('operador','facturas','crear',true),('operador','facturas','cobrar',true),
+      ('operador','ordenes','ver',true),('operador','ordenes','crear',true),('operador','ordenes','asignar',false),
+      ('operador','planes','ver',true),('operador','planes','editar',false),
+      ('operador','reportes','ver',false),
+      ('operador','configuracion','ver',true),('operador','configuracion','editar',false),
+      ('operador','usuarios','ver',false),('operador','usuarios','gestionar',false),
+      ('operador','backup','crear',false),('operador','backup','descargar',false),
+      ('operador','monitor','ver',false),
+      -- tecnico: solo ordenes y clientes (lectura)
+      ('tecnico','clientes','ver',true),('tecnico','clientes','crear',false),('tecnico','clientes','editar',false),('tecnico','clientes','eliminar',false),
+      ('tecnico','facturas','ver',false),('tecnico','facturas','crear',false),('tecnico','facturas','cobrar',false),
+      ('tecnico','ordenes','ver',true),('tecnico','ordenes','crear',false),('tecnico','ordenes','asignar',false),
+      ('tecnico','planes','ver',true),('tecnico','planes','editar',false),
+      ('tecnico','reportes','ver',false),
+      ('tecnico','configuracion','ver',false),('tecnico','configuracion','editar',false),
+      ('tecnico','usuarios','ver',false),('tecnico','usuarios','gestionar',false),
+      ('tecnico','backup','crear',false),('tecnico','backup','descargar',false),
+      ('tecnico','monitor','ver',false)
+    ON CONFLICT (rol, modulo, accion) DO NOTHING;
   `);
   console.log('✓ Schema initialized');
 };

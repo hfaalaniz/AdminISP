@@ -23,6 +23,7 @@ const ofertas = require('../controllers/ofertasController');
 const backup = require('../controllers/backupController');
 const reportes = require('../controllers/reportesController');
 const contacto = require('../controllers/contactoController');
+const roles = require('../controllers/rolesController');
 
 // Auth (public)
 router.post('/auth/login', auth.login);
@@ -146,6 +147,10 @@ router.delete('/backup/server/:filename', requireRole('admin'), backup.deleteSer
 router.post('/backup/restore', requireRole('admin'), express.json({ limit: '100mb' }), backup.restore);
 router.get('/backup/schedule', requireRole('admin'), backup.getSchedule);
 router.post('/backup/schedule', requireRole('admin'), backup.setSchedule);
+
+// Roles y permisos (admin only)
+router.get('/roles', requireRole('admin'), roles.listar);
+router.put('/roles/:rol/:modulo/:accion', requireRole('admin'), roles.actualizar);
 
 // Monitor — admin only
 router.get('/monitor/summary',     requireRole('admin'), monitor.getSummary);

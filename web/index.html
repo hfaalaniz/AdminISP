@@ -1,10 +1,59 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>web</title>
+
+    <!-- Preconnect a recursos externos para mejorar Core Web Vitals -->
+    <link rel="preconnect" href="https://adminisp-production.up.railway.app" />
+    <link rel="dns-prefetch" href="https://adminisp-production.up.railway.app" />
+    <link rel="preconnect" href="https://www.openstreetmap.org" />
+
+    <!-- SEO base (sobrescrito dinámicamente por react-helmet-async) -->
+    <title>Internet de fibra óptica en Villa Santa Cruz del Lago | AdminISP</title>
+    <meta name="description" content="Conectá tu hogar o negocio con internet de fibra óptica de alta velocidad en Villa Santa Cruz del Lago y alrededores. Planes desde precios accesibles, instalación rápida y soporte local." />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0f172a" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:site_name" content="AdminISP" />
+    <meta property="og:title" content="Internet de fibra óptica en Villa Santa Cruz del Lago" />
+    <meta property="og:description" content="Planes de internet de alta velocidad. Instalación rápida, soporte local y precios accesibles en Córdoba." />
+    <meta property="og:image" content="/og-image.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Internet de fibra óptica | AdminISP" />
+    <meta name="twitter:description" content="Planes de internet de alta velocidad en Villa Santa Cruz del Lago, Córdoba." />
+    <meta name="twitter:image" content="/og-image.png" />
+
+    <!-- JSON-LD: ISP como LocalBusiness (base, se completa dinámicamente) -->
+    <!-- Preload fuente principal para evitar FOUT -->
+    <link rel="preload" href="/src/main.tsx" as="script" crossorigin />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "AdminISP",
+      "description": "Proveedor de internet de fibra óptica en Villa Santa Cruz del Lago, Córdoba, Argentina.",
+      "areaServed": {
+        "@type": "Place",
+        "name": "Villa Santa Cruz del Lago, Córdoba, Argentina"
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Villa Santa Cruz del Lago",
+        "addressRegion": "Córdoba",
+        "addressCountry": "AR"
+      },
+      "serviceType": "Proveedor de servicios de internet",
+      "priceRange": "$$"
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

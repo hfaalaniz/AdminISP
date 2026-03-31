@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { Helmet } from 'react-helmet-async'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface Plan {
@@ -76,6 +78,26 @@ interface ClienteInfo {
 }
 
 type Step = 'inicio' | 'planes' | 'instalacion' | 'formulario' | 'exito' | 'login' | 'portal'
+
+const STEP_TO_PATH: Record<Step, string> = {
+  inicio: '/',
+  planes: '/planes',
+  instalacion: '/contratar/instalacion',
+  formulario: '/contratar/registro',
+  exito: '/contratar/exito',
+  login: '/login',
+  portal: '/mi-cuenta',
+}
+
+const PATH_TO_STEP: Record<string, Step> = {
+  '/': 'inicio',
+  '/planes': 'planes',
+  '/contratar/instalacion': 'instalacion',
+  '/contratar/registro': 'formulario',
+  '/contratar/exito': 'exito',
+  '/login': 'login',
+  '/mi-cuenta': 'portal',
+}
 
 // ── API ───────────────────────────────────────────────────────────────────────
 const api = axios.create({ baseURL: `${import.meta.env.VITE_API_URL || ''}/api` })
@@ -402,8 +424,150 @@ const ContactForm = () => {
 }
 
 // ── Main App ──────────────────────────────────────────────────────────────────
+// ── SEO ───────────────────────────────────────────────────────────────────────
+function SeoHead({ step, isp, planSel, planes }: { step: Step; isp: ISP; planSel: Plan | null; planes: Plan[] }) {
+  const location = useLocation()
+  const empresa = isp.nombre_empresa || 'AdminISP'
+  const lugar = `${isp.localidad}, ${isp.provincia}`
+  const tel = isp.telefono || ''
+  const email = isp.email || ''
+
+  const seoMap: Record<Step, { title: string; description: string; canonical?: string }> = {
+    inicio: {
+      title: `Internet fibra óptica en ${lugar} | ${empresa}`,
+      description: `Conectate con internet de fibra óptica de alta velocidad en ${lugar}. Planes accesibles, instalación rápida y soporte local. ${tel ? `Llamanos: ${tel}` : ''}`.trim(),
+    },
+    planes: {
+      title: `Planes de internet en ${lugar} | ${empresa}`,
+      description: `Elegí el plan de fibra óptica que mejor se adapta a tu hogar o negocio en ${lugar}. Velocidades desde 10 Mbps hasta 1 Gbps.`,
+    },
+    instalacion: {
+      title: `Instalación de fibra óptica | ${empresa}`,
+      description: `Conocé nuestras opciones de instalación de internet en ${lugar}. Instalación gratuita disponible. ${empresa} — soporte local garantizado.`,
+    },
+    formulario: {
+      title: `Contratar internet en ${lugar} | ${empresa}`,
+      description: `Completá tu solicitud de servicio de internet en ${lugar}. Proceso 100% online, rápido y sin papeles.${planSel ? ` Plan seleccionado: ${planSel.nombre}.` : ''}`,
+    },
+    exito: {
+      title: `Solicitud recibida | ${empresa}`,
+      description: `Tu solicitud de internet fue recibida con éxito. En breve nos comunicamos para coordinar la instalación en ${lugar}.`,
+    },
+    login: {
+      title: `Acceder a mi cuenta | ${empresa}`,
+      description: `Ingresá a tu portal de cliente de ${empresa} para ver tus facturas, estado del servicio y más.`,
+    },
+    portal: {
+      title: `Mi cuenta | ${empresa}`,
+      description: `Portal de clientes de ${empresa}. Consultá tu plan, facturas y estado de conexión.`,
+    },
+  }
+
+  const { title, description } = seoMap[step]
+
+  // JSON-LD LocalBusiness completo con datos del ISP
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: empresa,
+    description: `Proveedor de internet de fibra óptica en ${lugar}, Argentina.`,
+    areaServed: { '@type': 'Place', name: `${lugar}, Argentina` },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: isp.localidad,
+      addressRegion: isp.provincia,
+      addressCountry: 'AR',
+      ...(isp.domicilio ? { streetAddress: isp.domicilio } : {}),
+    },
+    ...(tel ? { telephone: tel } : {}),
+    ...(email ? { email } : {}),
+    serviceType: 'Proveedor de servicios de internet',
+    priceRange: '$$',
+  }
+
+  // No indexar páginas privadas
+  const noIndex = step === 'portal' || step === 'login' || step === 'exito'
+  const siteUrl = typeof window !== 'undefined' ? window.location.origin : ''
+  const canonical = `${siteUrl}${location.pathname}`
+
+  return (
+    <Helmet>
+      <html lang="es" />
+      <title>{title}</title>
+      <meta name="description" content={description} />
+      {noIndex
+        ? <meta name="robots" content="noindex, nofollow" />
+        : <meta name="robots" content="index, follow" />
+      }
+      {!noIndex && <link rel="canonical" href={canonical} />}
+      {/* Open Graph */}
+      <meta property="og:title" content={title} />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="website" />
+      <meta property="og:locale" content="es_AR" />
+      <meta property="og:site_name" content={empresa} />
+      <meta property="og:url" content={canonical} />
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      {/* JSON-LD LocalBusiness */}
+      <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
+
+      {/* JSON-LD Ofertas de planes (solo en inicio y planes) */}
+      {(step === 'inicio' || step === 'planes') && planes.length > 0 && (
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          name: `Planes de internet de ${empresa}`,
+          itemListElement: planes.map((p, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: {
+              '@type': 'Product',
+              name: p.nombre,
+              description: p.descripcion || `Plan de internet ${p.velocidad_down}/${p.velocidad_up} Mbps`,
+              brand: { '@type': 'Brand', name: empresa },
+              offers: {
+                '@type': 'Offer',
+                price: p.precio_mensual,
+                priceCurrency: 'ARS',
+                availability: 'https://schema.org/InStock',
+                seller: { '@type': 'Organization', name: empresa },
+              },
+            },
+          })),
+        })}</script>
+      )}
+
+      {/* JSON-LD BreadcrumbList (páginas internas) */}
+      {step !== 'inicio' && !noIndex && (
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Inicio', item: `${siteUrl}/` },
+            ...(step === 'planes' ? [
+              { '@type': 'ListItem', position: 2, name: 'Planes', item: `${siteUrl}/planes` },
+            ] : step === 'instalacion' ? [
+              { '@type': 'ListItem', position: 2, name: 'Planes', item: `${siteUrl}/planes` },
+              { '@type': 'ListItem', position: 3, name: 'Instalación', item: `${siteUrl}/contratar/instalacion` },
+            ] : step === 'formulario' ? [
+              { '@type': 'ListItem', position: 2, name: 'Planes', item: `${siteUrl}/planes` },
+              { '@type': 'ListItem', position: 3, name: 'Registro', item: `${siteUrl}/contratar/registro` },
+            ] : []),
+          ],
+        })}</script>
+      )}
+    </Helmet>
+  )
+}
+
 export default function App() {
-  const [step, setStep] = useState<Step>('inicio')
+  const navigate = useNavigate()
+  const location = useLocation()
+  const step: Step = PATH_TO_STEP[location.pathname] ?? 'inicio'
+  const setStep = (s: Step) => navigate(STEP_TO_PATH[s])
   const [planes, setPlanes] = useState<Plan[]>([])
   const [planesLoaded, setPlanesLoaded] = useState(false)
   const [ofertas, setOfertas] = useState<OfertaInstalacion[]>([])
@@ -533,7 +697,7 @@ export default function App() {
 
   const scrollTo = (id: string) => {
     setNavOpen(false)
-    if (step !== 'inicio') { setStep('inicio'); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 100) }
+    if (step !== 'inicio') { navigate('/'); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 100) }
     else document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
 
@@ -611,6 +775,7 @@ export default function App() {
   // ── RENDER ──────────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+      <SeoHead step={step} isp={isp} planSel={planSel} planes={planes} />
 
       {/* ═══════════════════════ BANNER PUBLICITARIO ═══════════════════════ */}
       {bannerVisible && (() => {

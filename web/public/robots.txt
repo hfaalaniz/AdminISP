@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /login
+Disallow: /mi-cuenta
+Disallow: /contratar/exito
+
+Sitemap: https://gonzaisp.netlify.app/sitemap.xml

@@ -11,6 +11,7 @@ const titles: Record<string, string> = {
   '/configuracion': 'Configuración',
   '/usuarios': 'Usuarios',
   '/ordenes': 'Órdenes de Trabajo',
+  '/roles': 'Roles y Permisos',
 };
 
 export const Layout = () => {

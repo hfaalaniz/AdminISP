@@ -14,6 +14,7 @@ const adminNav = [
   { to: '/configuracion', label: 'Configuración', icon: '⚙️' },
   { to: '/reportes', label: 'Reportes', icon: '📈' },
   { to: '/backup', label: 'Base de Datos', icon: '🗄️' },
+  { to: '/roles', label: 'Roles y Permisos', icon: '🔐' },
 ];
 
 const tecnicoNav = [
