@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
@@ -232,6 +233,7 @@ export const Roles = () => {
       <p className="text-xs text-gray-400">
         Los cambios se guardan automáticamente. Los permisos afectan el acceso de nuevos inicios de sesión.
       </p>
+      <FooterCredits />
     </div>
   );
 };

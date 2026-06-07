@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -186,6 +187,7 @@ export const Ordenes = () => {
           <OrdenForm onSuccess={load} onClose={() => setShowForm(false)} />
         </Modal>
       )}
+      <FooterCredits />
     </div>
   );
 };

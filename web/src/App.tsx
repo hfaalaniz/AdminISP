@@ -1743,8 +1743,19 @@ export default function App() {
               {isp.email && <a href={`mailto:${isp.email}`} className="hover:text-cyan-400 transition">{isp.email}</a>}
             </div>
           </div>
-          <div className="border-t border-white/5 mt-8 pt-6 text-center text-xs text-slate-600">
-            © {new Date().getFullYear()} {isp.nombre_empresa}. Todos los derechos reservados.
+          <div className="border-t border-white/5 mt-8 pt-6 text-center text-xs text-slate-600 space-y-1">
+            <div>© {new Date().getFullYear()} {isp.nombre_empresa}. Todos los derechos reservados.</div>
+            <div>
+              Desarrollado por{' '}
+              <a
+                href="https://developers-soft.pages.dev"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
+              >
+                Developers-Soft
+              </a>
+            </div>
           </div>
         </div>
       </footer>

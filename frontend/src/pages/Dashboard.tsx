@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useEffect, useState } from 'react';
 import { dashboardApi } from '../services/api';
 import { StatCard } from '../components/ui/StatCard';
@@ -28,6 +29,7 @@ export const Dashboard = () => {
         <StatCard label="Monto pendiente" value={fmt(stats.monto_pendiente)} icon="💰" color="bg-orange-50 text-orange-600" />
         <StatCard label="Cobrado este mes" value={fmt(stats.monto_cobrado_mes)} icon="💵" color="bg-green-50 text-green-600" />
       </div>
+      <FooterCredits />
     </div>
   );
 };

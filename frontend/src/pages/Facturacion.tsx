@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { facturasApi } from '../services/api';
@@ -111,6 +112,7 @@ export const Facturacion = () => {
           <FacturaForm factura={showPago} onSuccess={fetch} onClose={() => setShowPago(null)} />
         </Modal>
       )}
+      <FooterCredits />
     </div>
   );
 };

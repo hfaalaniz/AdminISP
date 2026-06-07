@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { planesApi, ofertasApi } from '../services/api';
@@ -126,6 +127,7 @@ export const Planes = () => {
           loading={deleting}
         />
       )}
+      <FooterCredits />
     </div>
   );
 };

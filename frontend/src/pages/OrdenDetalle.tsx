@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -296,6 +297,7 @@ const ParteSection = ({ orden, parte, canEdit, onRefresh, catalogoEquipos }: {
           loading={submitting}
         />
       )}
+      <FooterCredits />
     </div>
   );
 };

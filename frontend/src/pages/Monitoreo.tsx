@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import { Pagination } from '../components/ui/Pagination';
@@ -413,6 +414,7 @@ export const Monitoreo = () => {
           </div>
         </div>
       )}
+      <FooterCredits />
     </div>
   );
 };

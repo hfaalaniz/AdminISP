@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -329,6 +330,7 @@ export const Backup = () => {
           </div>
         </div>
       )}
+      <FooterCredits />
     </div>
   );
 };

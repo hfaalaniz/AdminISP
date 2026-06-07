@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import api from '../services/api';
@@ -238,6 +239,7 @@ export const Notificaciones = () => {
           <NotifForm onSuccess={load} onClose={() => setShowForm(false)} />
         </Modal>
       )}
+      <FooterCredits />
     </div>
   );
 };

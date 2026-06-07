@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { conexionesApi } from '../services/api';
@@ -83,6 +84,7 @@ export const Conexiones = () => {
           <Pagination page={page} totalPages={totalPages} total={total} onPage={setPage} />
         </div>
       </div>
+      <FooterCredits />
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -268,6 +269,7 @@ export const ClienteDetalle = () => {
           <FacturaForm factura={showPago} onSuccess={load} onClose={() => setShowPago(null)} />
         </Modal>
       )}
+      <FooterCredits />
     </div>
   );
 };

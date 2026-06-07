@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useCallback } from 'react';
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Cell,
@@ -670,6 +671,7 @@ export const Reportes = () => {
           {loading && <div className="text-gray-400 text-sm py-8 text-center">Cargando...</div>}
         </div>
       )}
+      <FooterCredits />
     </div>
   );
 };

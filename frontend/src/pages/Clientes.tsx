@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -181,6 +182,7 @@ export const Clientes = () => {
           loading={deleting}
         />
       )}
+      <FooterCredits />
     </div>
   );
 };

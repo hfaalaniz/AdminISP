@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { usuariosApi } from '../services/api';
@@ -176,6 +177,7 @@ export const Usuarios = () => {
           loading={toggling}
         />
       )}
+      <FooterCredits />
     </div>
   );
 };

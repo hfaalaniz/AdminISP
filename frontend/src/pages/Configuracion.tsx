@@ -1,3 +1,4 @@
+import { FooterCredits } from '../components/ui/FooterCredits';
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { configuracionApi, equiposApi, ofertasApi, planesApi } from '../services/api';
@@ -646,6 +647,7 @@ const OfertasSection = ({ ofertas, planes, showForm, editOferta, ofertaForm, sav
           loading={deletingOferta}
         />
       )}
+      <FooterCredits />
     </div>
   );
 };
