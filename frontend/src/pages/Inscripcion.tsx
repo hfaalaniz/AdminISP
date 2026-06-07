@@ -215,8 +215,8 @@ export const Inscripcion = () => {
                 const ofertaGratis = ofertas.find(o => o.tipo === 'gratis' || Number(o.precio_total) === 0);
                 const ofertaDestacada = ofertas.find(o => o.destacada);
                 const mejorOferta = ofertaDestacada || ofertaGratis;
-                return planes.map((p, i) => {
-                const popular = i === 1;
+                return planes.map((p) => {
+                const popular = !!p.destacado;
                 return (
                   <div key={p.id} onClick={() => elegirPlan(p)}
                     className={`relative rounded-3xl p-6 flex flex-col gap-5 cursor-pointer transition-all duration-200 hover:-translate-y-1 ${
@@ -226,7 +226,7 @@ export const Inscripcion = () => {
                     }`}>
                     {popular && (
                       <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-cyan-400 to-blue-500 text-white text-[10px] font-black px-3 py-1 rounded-full whitespace-nowrap uppercase tracking-wide">
-                        ★ Más popular
+                        {p.badge_texto || '★ Más popular'}
                       </div>
                     )}
                     {popular && mejorOferta && (

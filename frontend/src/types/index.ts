@@ -10,6 +10,8 @@ export interface Plan {
   precio_mensual: number;
   descripcion?: string;
   activo: boolean;
+  destacado?: boolean;
+  badge_texto?: string;
 }
 
 export interface Cliente {

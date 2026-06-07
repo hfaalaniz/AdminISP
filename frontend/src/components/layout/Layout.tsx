@@ -27,6 +27,17 @@ export const Layout = () => {
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
+        <footer className="text-center text-xs text-gray-400 py-2 border-t border-gray-100 bg-white">
+          Desarrollado por{' '}
+          <a
+            href="https://developers-soft.pages.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:text-blue-700 font-medium transition-colors"
+          >
+            Developers-Soft
+          </a>
+        </footer>
       </div>
     </div>
   );

@@ -245,6 +245,9 @@ const initSchema = async () => {
       updated_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    ALTER TABLE planes ADD COLUMN IF NOT EXISTS destacado BOOLEAN NOT NULL DEFAULT FALSE;
+    ALTER TABLE planes ADD COLUMN IF NOT EXISTS badge_texto TEXT;
+
     ALTER TABLE ofertas_instalacion ADD COLUMN IF NOT EXISTS precio_original NUMERIC(10,2);
     ALTER TABLE ofertas_instalacion ADD COLUMN IF NOT EXISTS destacada BOOLEAN NOT NULL DEFAULT FALSE;
     ALTER TABLE ofertas_instalacion ADD COLUMN IF NOT EXISTS badge_texto TEXT;

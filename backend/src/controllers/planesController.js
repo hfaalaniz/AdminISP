@@ -23,14 +23,14 @@ const obtener = async (req, res, next) => {
 
 const crear = async (req, res, next) => {
   try {
-    const { nombre, velocidad_down, velocidad_up, precio_mensual, descripcion } = req.body;
+    const { nombre, velocidad_down, velocidad_up, precio_mensual, descripcion, destacado, badge_texto } = req.body;
     if (!nombre || !velocidad_down || !velocidad_up || !precio_mensual) {
       return res.status(400).json({ error: 'Campos requeridos: nombre, velocidad_down, velocidad_up, precio_mensual' });
     }
     const { rows } = await query(
-      `INSERT INTO planes (nombre, velocidad_down, velocidad_up, precio_mensual, descripcion)
-       VALUES ($1,$2,$3,$4,$5) RETURNING *`,
-      [nombre, velocidad_down, velocidad_up, precio_mensual, descripcion || null]
+      `INSERT INTO planes (nombre, velocidad_down, velocidad_up, precio_mensual, descripcion, destacado, badge_texto)
+       VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING *`,
+      [nombre, velocidad_down, velocidad_up, precio_mensual, descripcion || null, destacado ?? false, badge_texto || null]
     );
     res.status(201).json(rows[0]);
   } catch (err) {
@@ -40,7 +40,7 @@ const crear = async (req, res, next) => {
 
 const actualizar = async (req, res, next) => {
   try {
-    const fields = ['nombre', 'velocidad_down', 'velocidad_up', 'precio_mensual', 'descripcion', 'activo'];
+    const fields = ['nombre', 'velocidad_down', 'velocidad_up', 'precio_mensual', 'descripcion', 'activo', 'destacado', 'badge_texto'];
     const updates = [];
     const params = [];
 

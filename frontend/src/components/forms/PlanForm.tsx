@@ -19,6 +19,8 @@ export const PlanForm = ({ plan, onSuccess, onClose }: Props) => {
     velocidad_up: plan?.velocidad_up?.toString() ?? '',
     precio_mensual: plan?.precio_mensual?.toString() ?? '',
     descripcion: plan?.descripcion ?? '',
+    destacado: plan?.destacado ?? false,
+    badge_texto: plan?.badge_texto ?? '',
   });
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -34,6 +36,8 @@ export const PlanForm = ({ plan, onSuccess, onClose }: Props) => {
         velocidad_up: Number(form.velocidad_up),
         precio_mensual: Number(form.precio_mensual),
         descripcion: form.descripcion || undefined,
+        destacado: form.destacado,
+        badge_texto: form.badge_texto || undefined,
       };
       if (plan) {
         await planesApi.actualizar(plan.id, payload);
@@ -63,6 +67,26 @@ export const PlanForm = ({ plan, onSuccess, onClose }: Props) => {
         <label className="text-sm font-medium text-gray-700 block mb-1">Descripción</label>
         <textarea value={form.descripcion} onChange={set('descripcion')} rows={2} className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
       </div>
+      <div className="border-t pt-3">
+        <label className="flex items-center gap-3 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={form.destacado}
+            onChange={(e) => setForm((f) => ({ ...f, destacado: e.target.checked }))}
+            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+          />
+          <span className="text-sm font-medium text-gray-700">Marcar como destacado <span className="text-yellow-500">★</span></span>
+        </label>
+        <p className="text-xs text-gray-400 mt-1 ml-7">El plan aparecerá resaltado visualmente en la página pública.</p>
+      </div>
+      {form.destacado && (
+        <Input
+          label='Texto del badge (opcional, ej: "★ Más popular")'
+          value={form.badge_texto}
+          onChange={set('badge_texto')}
+          placeholder="★ Más popular"
+        />
+      )}
       <div className="flex justify-end gap-2 pt-2">
         <Button variant="secondary" type="button" onClick={onClose}>Cancelar</Button>
         <Button type="submit" disabled={loading}>{loading ? 'Guardando...' : plan ? 'Actualizar' : 'Crear plan'}</Button>

@@ -29,7 +29,7 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg w-full max-w-sm p-8">
         <div className="text-center mb-8">
           <div className="text-4xl mb-3">📡</div>
@@ -44,6 +44,17 @@ export const Login = () => {
           </Button>
         </form>
       </div>
+      <footer className="mt-4 text-xs text-gray-400">
+        Desarrollado por{' '}
+        <a
+          href="https://developers-soft.pages.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:text-blue-700 font-medium transition-colors"
+        >
+          Developers-Soft
+        </a>
+      </footer>
     </div>
   );
 };
