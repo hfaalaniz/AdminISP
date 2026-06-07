@@ -533,8 +533,24 @@ export const Inscripcion = () => {
       )}
 
       {/* Footer */}
-      <footer className="bg-slate-950 border-t border-white/8 px-6 py-6 text-center text-slate-600 text-xs">
-        © {new Date().getFullYear()} AdminISP — Todos los derechos reservados
+      <footer className="bg-slate-950 border-t border-white/8 px-6 py-8 text-center text-slate-500 text-xs space-y-1">
+        <div className="flex items-center justify-center gap-2 text-slate-300 font-semibold text-sm">
+          <span>📡</span>
+          <span>AdminISP</span>
+        </div>
+        <div>Villa Santa Cruz del Lago, Córdoba</div>
+        <div>© {new Date().getFullYear()} AdminISP. Todos los derechos reservados.</div>
+        <div className="pt-1">
+          Desarrollado por{' '}
+          <a
+            href="https://developers-soft.pages.dev"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
+          >
+            Developers-Soft
+          </a>
+        </div>
       </footer>
     </div>
   );
